@@ -2,10 +2,10 @@ import { ObjectId } from 'mongodb';
 import { NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongo';
 
-export async function DELETE(
+export const DELETE = async (
   request: Request,
   { params }: { params: { id: string } }
-) {
+) => {
   try {
     if (!params?.id) {
       return NextResponse.json(
@@ -17,18 +17,15 @@ export async function DELETE(
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB || 'finance');
 
-    // Solution 1: Type-safe branching
-    let result;
+    // Handle both ObjectId and string UUIDs
+    let query;
     if (ObjectId.isValid(params.id)) {
-      result = await db.collection('transactions').deleteOne({ 
-        _id: new ObjectId(params.id) 
-      });
+      query = { _id: new ObjectId(params.id) };
     } else {
-      // For string IDs, we need to assert the type
-      result = await db.collection('transactions').deleteOne({ 
-        _id: params.id as unknown as ObjectId 
-      });
+      query = { _id: params.id };
     }
+
+    const result = await db.collection('transactions').deleteOne(query as any);
 
     if (result.deletedCount === 1) {
       return NextResponse.json({ success: true });
@@ -46,4 +43,4 @@ export async function DELETE(
       { status: 500 }
     );
   }
-}
+};

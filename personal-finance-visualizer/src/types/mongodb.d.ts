@@ -1,7 +1,10 @@
-import { ObjectId, Condition } from 'mongodb';
+
+import { ObjectId } from 'mongodb';
 
 declare module 'mongodb' {
-  interface Filter<T> {
-    _id?: string | ObjectId | Condition<ObjectId>;
+  interface Collection {
+    deleteOne(
+      filter: { _id: ObjectId | string }
+    ): Promise<DeleteResult>;
   }
 }
