@@ -5,6 +5,8 @@ import TransactionForm from '@/components/TransactionForm';
 import TransactionList from '@/components/TransactionList';
 import ExpensesBarChart from '@/components/ExpensesBarChart';
 import { Transaction } from '@/types/transaction';
+import CategoryPieChart from '@/components/CategoryPieChart';
+import DashboardSummary from '@/components/DashboardSummary';
 
 export default function Home() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -62,8 +64,11 @@ export default function Home() {
       <TransactionForm onAdd={handleAdd} />
 
       <TransactionList transactions={transactions} onDelete={handleDelete} />
+      <DashboardSummary transactions={transactions} />
+
 
       <ExpensesBarChart transactions={transactions} />
+      <CategoryPieChart transactions={transactions} />
     </main>
   );
 }

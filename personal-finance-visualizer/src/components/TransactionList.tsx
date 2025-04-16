@@ -22,6 +22,7 @@ export default function TransactionList({ transactions, onDelete }: Props) {
           <div>
             <p className="font-medium">{txn.description}</p>
             <p className="text-sm text-gray-500">{txn.date}</p>
+            <p className="text-sm text-indigo-500">{txn.category}</p>
           </div>
           <div className="text-right space-y-1">
             <p className="font-bold text-red-600">${typeof txn.amount === 'number' ? txn.amount.toFixed(2) : '0.00'}</p>

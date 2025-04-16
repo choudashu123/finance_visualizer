@@ -7,20 +7,28 @@ import { Transaction } from '@/types/transaction';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
+
 interface Props {
   onAdd: (transaction: Transaction) => void;
 }
+
+const categories = [' Food', 'Transport', 'Entertainment', 'Utilities', 'Rent', 'Other'];
+
 
 export default function TransactionForm({ onAdd }: Props) {
   const [amount, setAmount] = useState('');
   const [description, setDescription] = useState('');
   const [date, setDate] = useState('');
+  const [category, setCategory] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!amount || !description || !date) {
+    if (!amount || !description || !date || !category) {
       setError('All fields are required.');
       return;
     }
@@ -37,12 +45,14 @@ export default function TransactionForm({ onAdd }: Props) {
       amount: parseFloat(amount),
       description,
       date,
+      category
     };
 
     onAdd(newTransaction);
     setAmount('');
     setDescription('');
     setDate('');
+    setCategory('');
   };
 
   return (
@@ -72,6 +82,21 @@ export default function TransactionForm({ onAdd }: Props) {
         value={date}
         onChange={(e) => setDate(e.target.value)}
       />
+      <div>
+        <Select value={category} onValueChange={setCategory}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select a category" />
+
+            </SelectTrigger> 
+            <SelectContent>
+              {categories.map((cat) => (
+                <SelectItem key={cat} value={cat}>
+                  {cat}
+                </SelectItem>
+              ))}
+            </SelectContent>
+        </Select>
+      </div>
       <Button type="submit">Add Transaction</Button>
     </form>
   );
