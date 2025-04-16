@@ -2,6 +2,7 @@ import { ObjectId } from 'mongodb';
 import { NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongo';
 
+
 export async function DELETE(
   req: Request,
   { params }: { params: { id: string } }

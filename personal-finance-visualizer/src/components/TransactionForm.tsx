@@ -7,7 +7,6 @@ import { Transaction } from '@/types/transaction';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
 
-import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 
@@ -15,7 +14,7 @@ interface Props {
   onAdd: (transaction: Transaction) => void;
 }
 
-const categories = [' Food', 'Transport', 'Entertainment', 'Utilities', 'Rent', 'Other'];
+const categories = ['Food', 'Transport', 'Entertainment', 'Utilities', 'Rent', 'Other'];
 
 
 export default function TransactionForm({ onAdd }: Props) {

@@ -7,6 +7,9 @@ import ExpensesBarChart from '@/components/ExpensesBarChart';
 import { Transaction } from '@/types/transaction';
 import CategoryPieChart from '@/components/CategoryPieChart';
 import DashboardSummary from '@/components/DashboardSummary';
+import BudgetForm from '@/components/BudgetForm';
+import BudgetComparisonChart from '@/components/BudgetComparisonChart';
+import SpendingInsights from '@/components/SpendingInsights';
 
 export default function Home() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -56,6 +59,28 @@ export default function Home() {
       console.error('Error deleting transaction:', err);
     }
   };
+  const [budgets, setBudgets] = useState<Record<string, number>>({});
+  useEffect(() => {
+    fetch('/api/budgets')
+      .then(res => res.json())
+      .then(data => {
+        const loaded = Object.fromEntries(data.map((b: any) => [b.category, b.amount]));
+        setBudgets(loaded);
+      })
+      .catch(err => console.error('Failed to fetch budgets:', err));
+  }, []);
+  
+
+const handleSetBudget = async (category: string, amount: number) => {
+  setBudgets((prev) => ({ ...prev, [category]: amount }));
+  await fetch('/api/budgets', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ category, amount }),
+  });
+};
+
+
 
   return (
     <main className="max-w-xl mx-auto py-10 px-4">
@@ -66,9 +91,13 @@ export default function Home() {
       <TransactionList transactions={transactions} onDelete={handleDelete} />
       <DashboardSummary transactions={transactions} />
 
+      <BudgetForm onSetBudget={handleSetBudget} budgets={budgets} />
 
       <ExpensesBarChart transactions={transactions} />
       <CategoryPieChart transactions={transactions} />
+      <BudgetComparisonChart budgets={budgets} transactions={transactions} />
+      <SpendingInsights budgets={budgets} transactions={transactions} />
+
     </main>
   );
 }
