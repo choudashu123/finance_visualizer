@@ -12,3 +12,4 @@ declare module 'mongodb' {
     _id?: string | ObjectId | Condition<ObjectId>;
   }
 }
+

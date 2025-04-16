@@ -2,12 +2,14 @@ import { ObjectId } from 'mongodb';
 import { NextResponse } from 'next/server';
 import clientPromise from '@/lib/mongo';
 
-export const DELETE = async (
+export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
-) => {
+  context: { params: Promise<{ id: string }> }
+) {
   try {
-    if (!params?.id) {
+    const { id } = await context.params;
+
+    if (!id) {
       return NextResponse.json(
         { error: 'Transaction ID is required' },
         { status: 400 }
@@ -17,25 +19,21 @@ export const DELETE = async (
     const client = await clientPromise;
     const db = client.db(process.env.MONGODB_DB || 'finance');
 
-    // Handle both ObjectId and string UUIDs
-    let query;
-    if (ObjectId.isValid(params.id)) {
-      query = { _id: new ObjectId(params.id) };
-    } else {
-      query = { _id: params.id };
-    }
+    const filter = ObjectId.isValid(id)
+      ? { _id: new ObjectId(id) }
+      : { id };
 
-    const result = await db.collection('transactions').deleteOne(query as any);
+    const result = await db.collection('transactions').deleteOne(filter);
 
     if (result.deletedCount === 1) {
       return NextResponse.json({ success: true });
     }
-    
+
     return NextResponse.json(
       { error: 'Transaction not found' },
       { status: 404 }
     );
-    
+
   } catch (error) {
     console.error('DELETE error:', error);
     return NextResponse.json(
@@ -43,4 +41,4 @@ export const DELETE = async (
       { status: 500 }
     );
   }
-};
+}

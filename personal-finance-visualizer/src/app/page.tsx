@@ -53,7 +53,8 @@ export default function Home() {
       });
 
       if (res.ok) {
-        setTransactions((prev) => prev.filter((t) => t._id !== id));
+        setTransactions((prev) => prev.filter((t) => t._id !== id 
+          && t.id !== id));
       }
     } catch (err) {
       console.error('Error deleting transaction:', err);

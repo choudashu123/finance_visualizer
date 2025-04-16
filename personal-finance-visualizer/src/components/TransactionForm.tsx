@@ -40,7 +40,7 @@ export default function TransactionForm({ onAdd }: Props) {
     setError('');
 
     const newTransaction: Transaction = {
-      _id: crypto.randomUUID(),
+      id: crypto.randomUUID(),
       amount: parseFloat(amount),
       description,
       date,
